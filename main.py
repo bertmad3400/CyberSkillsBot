@@ -24,7 +24,9 @@ async def getEventsOfThisMonth():
 async def formatMessage(events):
     embedMessages = []
     for event in events:
-        currentMessage = discord.Embed(title=event["title"], description=event["description"], color=0x00ff00)
+        currentMessage = discord.Embed(title=event["title"], description=event["description"], url=event["eventURL"], color=0x00ff00)
+
+        currentMessage.set_thumbnail(url=event["imageURL"])
 
         for eventDetail in ["date", "time", "location"]:
             currentMessage.add_field(name=eventDetail.capitalize(), value=event[eventDetail], inline=False)

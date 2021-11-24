@@ -43,6 +43,18 @@ async def on_ready():
 async def on_message(message):
     if message.content.lower().startswith("!cs") and message.author != client.user:
         messageContents = message.content.lower()
+
+        if "next" in messageContents:
+            events = await getNextEvents(messageContents)
+        elif "current" in messageContents:
+            events = await getNextEvents(messageContents)
+        else:
+            return
+
+        embedMessages = await formatMessage(events)
+        for embedMessage in embedMessages:
+            await message.channel.send(embed=embedMessage)
+
         return
 
     else:

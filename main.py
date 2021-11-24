@@ -69,6 +69,10 @@ async def on_message(message):
 
         messageContents = message.content.lower()
 
+        compactMessage = True if "-c" in messageContents else False
+
+        messageContents = messageContents.replace("-c", "").strip()
+
         if "next" in messageContents:
             events = await getNextEvents(messageContents)
             evenType = "Upcoming Events"
@@ -90,9 +94,13 @@ async def on_message(message):
             await message.channel.send(f"Your request couldn't be processed, encountered following error when hitting the API: '{events}: {events.content.decode('utf-8')}'")
             return
 
-        embedMessages = await formatMessage(events)
-        for embedMessage in embedMessages:
+        if compactMessage:
+            embedMessage = await formatMessageCompact(events, evenType)
             await message.channel.send(embed=embedMessage)
+        else:
+            embedMessages = await formatMessage(events)
+            for embedMessage in embedMessages:
+                await message.channel.send(embed=embedMessage)
 
         return
 

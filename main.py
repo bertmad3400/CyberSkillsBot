@@ -31,7 +31,7 @@ async def getEventsForSpecificMonth(command):
     month = command.split(" ")[-1]
     year = command.split(" ")[-2]
 
-    return requests.get(f"https://bertmad.dk/api/cyberskills/{year}/{month.capitalize()}/")
+    return month, year, requests.get(f"https://bertmad.dk/api/cyberskills/{year}/{month.capitalize()}/")
 
 async def formatMessage(events):
     embedMessages = []
@@ -62,10 +62,13 @@ async def on_message(message):
 
         if "next" in messageContents:
             events = await getNextEvents(messageContents)
+            evenType = "Upcoming Events"
         elif "current" in messageContents:
             events = await getEventsOfThisMonth()
+            evenType = "Events for the Current Month"
         elif "specific" in messageContents:
-            events = await getEventsForSpecificMonth(messageContents)
+            month, year, events = await getEventsForSpecificMonth(messageContents)
+            evenType = f"Events for {month.capitalize()} {year}"
         elif "help" in messageContents or messageContents == "!cs":
             await message.channel.send(embed=helpMessage)
             return

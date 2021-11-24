@@ -16,7 +16,7 @@ async def getNextEvents(command):
     if not numberOfEvents.isnumeric():
         numberOfEvents = 3
 
-    return requests.get(f"https://bertmad.dk/api/cyberskills/nextEvents/{str(numberOfEvents)}/").json()
+    return requests.get(f"https://bertmad.dk/api/cyberskills/nextEvents/{str(numberOfEvents)}/")
 
 async def getEventsOfThisMonth():
     return requests.get("https://bertmad.dk/api/cyberskills/currentEvents/")
@@ -57,6 +57,12 @@ async def on_message(message):
         elif "specific" in messageContents:
             events = await getEventsForSpecificMonth(messageContents)
         else:
+            return
+
+        try:
+            events = events.json()
+        except:
+            await message.channel.send(f"Your request couldn't be processed, encountered following error when hitting the API: '{events}: {events.content.decode('utf-8')}'")
             return
 
         embedMessages = await formatMessage(events)

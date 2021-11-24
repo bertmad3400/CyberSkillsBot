@@ -41,7 +41,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.lower().startswith("!cs") and message.authorr != client.user:
+    if message.content.lower().startswith("!cs") and message.author != client.user:
         messageContents = message.content.lower()
         return
 

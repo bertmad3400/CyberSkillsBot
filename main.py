@@ -21,6 +21,12 @@ async def getNextEvents(command):
 async def getEventsOfThisMonth():
     return requests.get("https://bertmad.dk/api/cyberskills/currentEvents/")
 
+async def getEventsForSpecificMonth(command):
+    month = command.split(" ")[-1]
+    year = command.split(" ")[-2]
+
+    return requests.get(f"https://bertmad.dk/api/cyberskills/{year}/{month.capitalize()}/")
+
 async def formatMessage(events):
     embedMessages = []
     for event in events:
@@ -47,7 +53,9 @@ async def on_message(message):
         if "next" in messageContents:
             events = await getNextEvents(messageContents)
         elif "current" in messageContents:
-            events = await getNextEvents(messageContents)
+            events = await getEventsOfThisMonth()
+        elif "specific" in messageContents:
+            events = await getEventsForSpecificMonth(messageContents)
         else:
             return
 

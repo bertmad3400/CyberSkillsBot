@@ -10,6 +10,12 @@ token = Path("./token.secret").read_text()
 
 client = discord.Client()
 
+helpMessage = discord.Embed(title="Help page for the CyberSkills Event Bot", color=0x00ff00)
+helpMessage.set_thumbnail(url="https://bertmad.dk/div/images/cyberskills.jpg")
+helpMessage.add_field(name="To get the event for the current month:", value="!cs current")
+helpMessage.add_field(name="To get the upcomming events", value="!cs next [number of events]")
+helpMessage.add_field(name="To get the events for a specific month and year", value="!cs next (year) (month in english)")
+
 async def getNextEvents(command):
     numberOfEvents = command.split(" ")[-1]
 
@@ -56,6 +62,9 @@ async def on_message(message):
             events = await getEventsOfThisMonth()
         elif "specific" in messageContents:
             events = await getEventsForSpecificMonth(messageContents)
+        elif "help" in messageContents or messageContents == "!cs":
+            await message.channel.send(embed=helpMessage)
+            return
         else:
             return
 

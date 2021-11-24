@@ -47,6 +47,15 @@ async def formatMessage(events):
 
     return embedMessages
 
+async def formatMessageCompact(events, evenType):
+    currentMessage = discord.Embed(title=f"List of {evenType}", color=0x00ff00)
+    currentMessage.set_thumbnail(url="https://bertmad.dk/div/images/cyberskills.jpg")
+
+    for event in events:
+        currentMessage.add_field(name=f"{event['date']} - {event['time']}", value=f"[{event['title']}]({event['eventURL']})", inline=False)
+
+    return currentMessage
+
 @client.event
 async def on_ready():
     print(f'We have logged in as "{client.user}"')

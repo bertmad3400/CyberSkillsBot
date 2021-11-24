@@ -52,7 +52,8 @@ async def formatMessageCompact(events, evenType):
     currentMessage.set_thumbnail(url="https://bertmad.dk/div/images/cyberskills.jpg")
 
     for event in events:
-        currentMessage.add_field(name=f"{event['date']} - {event['time']}", value=f"[{event['title']}]({event['eventURL']})", inline=False)
+        title = (event["title"][:57].strip() + "...") if len(event["title"]) > 60 else event["title"]
+        currentMessage.add_field(name=f"**{event['date']}** | *{event['time']}*", value=f"[{title}]({event['eventURL']})", inline=False)
 
     return currentMessage
 

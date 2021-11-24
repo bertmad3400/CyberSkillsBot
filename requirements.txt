@@ -1,1 +1,2 @@
-discord -n
+discord
+requests

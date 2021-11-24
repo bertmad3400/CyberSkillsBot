@@ -16,6 +16,7 @@ helpMessage.add_field(name="To get the events for a specific month and year", va
 helpMessage.add_field(name="To get the event for the current month:", value="!cs current", inline=False)
 helpMessage.add_field(name="To get the upcomming events", value="!cs next [number of events]", inline=False)
 helpMessage.add_field(name="To use compact mode", value='Add "-c"', inline=False)
+helpMessage.add_field(name="To use expand mode", value='Add "-e"', inline=False)
 helpMessage.set_footer(text="By bertie#5137")
 
 async def getNextEvents(command):
@@ -35,7 +36,7 @@ async def getEventsForSpecificMonth(command):
 
     return month, year, requests.get(f"https://bertmad.dk/api/cyberskills/{year}/{month.capitalize()}/")
 
-async def formatMessage(events):
+async def formatMessage(events, inline):
     embedMessages = []
     for event in events:
         currentMessage = discord.Embed(title=event["title"], description=event["description"], url=event["eventURL"], color=0x00ff00)
@@ -43,7 +44,7 @@ async def formatMessage(events):
         currentMessage.set_thumbnail(url=event["imageURL"])
 
         for eventDetail in ["date", "time", "location"]:
-            currentMessage.add_field(name=eventDetail.capitalize(), value=event[eventDetail], inline=True)
+            currentMessage.add_field(name=eventDetail.capitalize(), value=event[eventDetail], inline=inline)
 
         embedMessages.append(currentMessage)
 
@@ -72,9 +73,14 @@ async def on_message(message):
 
         messageContents = message.content.lower()
 
-        compactMessage = True if "-c" in messageContents else False
+        if "-c" in messageContents:
+            compactMessage = 2
+        elif "-e" in messageContents:
+            compactMessage = 0
+        else:
+            compactMessage = 1
 
-        messageContents = messageContents.replace("-c", "").strip()
+        messageContents = messageContents.replace("-c", "").replace("-e", "").strip()
 
         if "next" in messageContents:
             events = await getNextEvents(messageContents)
@@ -97,11 +103,11 @@ async def on_message(message):
             await message.channel.send(f"Your request couldn't be processed, encountered following error when hitting the API: '{events}: {events.content.decode('utf-8')}'")
             return
 
-        if compactMessage:
+        if compactMessage == 2:
             embedMessage = await formatMessageCompact(events, evenType)
             await message.channel.send(embed=embedMessage)
         else:
-            embedMessages = await formatMessage(events)
+            embedMessages = await formatMessage(events, bool(compactMessage))
             for embedMessage in embedMessages:
                 await message.channel.send(embed=embedMessage)
 

@@ -12,9 +12,11 @@ client = discord.Client()
 
 helpMessage = discord.Embed(title="Help page for the CyberSkills Event Bot", color=0x00ff00)
 helpMessage.set_thumbnail(url="https://bertmad.dk/div/images/cyberskills.jpg")
-helpMessage.add_field(name="To get the event for the current month:", value="!cs current")
-helpMessage.add_field(name="To get the upcomming events", value="!cs next [number of events]")
-helpMessage.add_field(name="To get the events for a specific month and year", value="!cs next (year) (month in english)")
+helpMessage.add_field(name="To get the events for a specific month and year", value="!cs next (year) (month in english)", inline=False)
+helpMessage.add_field(name="To get the event for the current month:", value="!cs current", inline=False)
+helpMessage.add_field(name="To get the upcomming events", value="!cs next [number of events]", inline=False)
+helpMessage.add_field(name="To use compact mode", value='Add "-c"', inline=False)
+helpMessage.set_footer(text="By bertie#5137")
 
 async def getNextEvents(command):
     numberOfEvents = command.split(" ")[-1]

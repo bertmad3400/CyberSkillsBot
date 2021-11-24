@@ -41,7 +41,7 @@ async def formatMessage(events):
         currentMessage.set_thumbnail(url=event["imageURL"])
 
         for eventDetail in ["date", "time", "location"]:
-            currentMessage.add_field(name=eventDetail.capitalize(), value=event[eventDetail], inline=False)
+            currentMessage.add_field(name=eventDetail.capitalize(), value=event[eventDetail], inline=True)
 
         embedMessages.append(currentMessage)
 

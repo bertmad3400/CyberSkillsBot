@@ -54,6 +54,10 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.lower().startswith("!cs") and message.author != client.user:
+
+        if message.channel.name != "upcoming-events" and message.guild.name == "Cyber-Skills":
+            return
+
         messageContents = message.content.lower()
 
         if "next" in messageContents:
@@ -80,8 +84,7 @@ async def on_message(message):
 
         return
 
-    else:
-        return
+    return
 
 
 client.run(token)

@@ -21,6 +21,18 @@ async def getNextEvents(command):
 async def getEventsOfThisMonth():
     return requests.get("https://bertmad.dk/api/cyberskills/currentEvents/")
 
+async def formatMessage(events):
+    embedMessages = []
+    for event in events:
+        currentMessage = discord.Embed(title=event["title"], description=event["description"], color=0x00ff00)
+
+        for eventDetail in ["date", "time", "location"]:
+            currentMessage.add_field(name=eventDetail.capitalize(), value=event[eventDetail], inline=False)
+
+        embedMessages.append(currentMessage)
+
+    return embedMessages
+
 @client.event
 async def on_ready():
     print(f'We have logged in as "{client.user}"')

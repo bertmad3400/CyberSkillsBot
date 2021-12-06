@@ -13,7 +13,7 @@ client = discord.Client()
 helpMessage = discord.Embed(title="Help page for the CyberSkills Event Bot", color=0x00ff00)
 helpMessage.set_thumbnail(url="https://bertmad.dk/div/images/cyberskills.jpg")
 helpMessage.add_field(name="To get the events for a specific month and year", value="!cs next (year) (month in english)", inline=False)
-helpMessage.add_field(name="To get the event for the current month:", value="!cs current", inline=False)
+helpMessage.add_field(name="To get the event for the current month", value="!cs current", inline=False)
 helpMessage.add_field(name="To get the upcomming events", value="!cs next [number of events]", inline=False)
 helpMessage.add_field(name="To use compact mode", value='Add "-c"', inline=False)
 helpMessage.add_field(name="To use expand mode", value='Add "-e"', inline=False)
@@ -50,8 +50,8 @@ async def formatMessage(events, inline):
 
     return embedMessages
 
-async def formatMessageCompact(events, evenType):
-    currentMessage = discord.Embed(title=f"List of {evenType}", color=0x00ff00)
+async def formatMessageCompact(events, eventType):
+    currentMessage = discord.Embed(title=f"List of {eventType}", color=0x00ff00)
     currentMessage.set_thumbnail(url="https://bertmad.dk/div/images/cyberskills.jpg")
 
     for event in events:
@@ -68,7 +68,7 @@ async def on_ready():
 async def on_message(message):
     if message.content.lower().startswith("!cs") and message.author != client.user:
 
-        if message.channel.name != "upcoming-events" and message.guild.name == "Cyber-Skills":
+        if message.channel.name not in ["upcoming-events", "bot-test"] and message.guild.name == "Cyber-Skills":
             return
 
         messageContents = message.content.lower()
@@ -84,13 +84,13 @@ async def on_message(message):
 
         if "next" in messageContents:
             events = await getNextEvents(messageContents)
-            evenType = "Upcoming Events"
+            eventType = "Upcoming Events"
         elif "current" in messageContents:
             events = await getEventsOfThisMonth()
-            evenType = "Events for the Current Month"
+            eventType = "Events for the Current Month"
         elif "specific" in messageContents:
             month, year, events = await getEventsForSpecificMonth(messageContents)
-            evenType = f"Events for {month.capitalize()} {year}"
+            eventType = f"Events for {month.capitalize()} {year}"
         elif "help" in messageContents or messageContents == "!cs":
             await message.channel.send(embed=helpMessage)
             return
@@ -104,7 +104,7 @@ async def on_message(message):
             return
 
         if compactMessage == 2:
-            embedMessage = await formatMessageCompact(events, evenType)
+            embedMessage = await formatMessageCompact(events, eventType)
             await message.channel.send(embed=embedMessage)
         else:
             embedMessages = await formatMessage(events, bool(compactMessage))
